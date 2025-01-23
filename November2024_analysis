@@ -19,3 +19,5 @@ apr04_df <- read_csv("202104-divvy-tripdata.csv")
 may05_df <- read_csv("202105-divvy-tripdata.csv") 
 jun06_df <- read_csv("202106-divvy-tripdata.csv") 
 jul07_df <- read_csv("202107-divvy-tripdata.csv") 
+
+
