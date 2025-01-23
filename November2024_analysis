@@ -1,0 +1,21 @@
+#--------------------------------------------CREATING CSV FILE FOR TABLEAU------------------------------------------
+
+#load libraries 
+library(tidyverse) #calculations
+library(lubridate) #dates 
+library(hms) #time
+library(data.table) #exporting data frame
+
+#load original .csv files, a years worth of data from August 2020 to July 2021
+aug08_df <- read_csv("202008-divvy-tripdata.csv") 
+sep09_df <- read_csv("202009-divvy-tripdata.csv") 
+oct10_df <- read_csv("202010-divvy-tripdata.csv")
+nov11_df <- read_csv("202011-divvy-tripdata.csv")  
+dec12_df <- read_csv("202012-divvy-tripdata.csv")
+jan01_df <- read_csv("202101-divvy-tripdata.csv") 
+feb02_df <- read_csv("202102-divvy-tripdata.csv") 
+mar03_df <- read_csv("202103-divvy-tripdata.csv")
+apr04_df <- read_csv("202104-divvy-tripdata.csv")
+may05_df <- read_csv("202105-divvy-tripdata.csv") 
+jun06_df <- read_csv("202106-divvy-tripdata.csv") 
+jul07_df <- read_csv("202107-divvy-tripdata.csv") 
