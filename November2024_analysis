@@ -6,18 +6,173 @@ library(lubridate) #dates
 library(hms) #time
 library(data.table) #exporting data frame
 
-#load original .csv files, a years worth of data from August 2020 to July 2021
-aug08_df <- read_csv("202008-divvy-tripdata.csv") 
-sep09_df <- read_csv("202009-divvy-tripdata.csv") 
-oct10_df <- read_csv("202010-divvy-tripdata.csv")
-nov11_df <- read_csv("202011-divvy-tripdata.csv")  
-dec12_df <- read_csv("202012-divvy-tripdata.csv")
-jan01_df <- read_csv("202101-divvy-tripdata.csv") 
-feb02_df <- read_csv("202102-divvy-tripdata.csv") 
-mar03_df <- read_csv("202103-divvy-tripdata.csv")
-apr04_df <- read_csv("202104-divvy-tripdata.csv")
-may05_df <- read_csv("202105-divvy-tripdata.csv") 
-jun06_df <- read_csv("202106-divvy-tripdata.csv") 
-jul07_df <- read_csv("202107-divvy-tripdata.csv") 
+
+$${\color{lightgreen}Light \space Green}$$
+
+> library(tidyverse)
+── Attaching core tidyverse packages ──────────────────────────────────────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package to force all conflicts to become errors
+> library(lubridate)
+> library(hms)
+
+Attaching package: ‘hms’
+
+The following object is masked from ‘package:lubridate’:
+
+    hms
+
+> library(data.table)
+data.table 1.16.4 using 8 threads (see ?getDTthreads).  Latest news: r-datatable.com
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:lubridate’:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week, yday, year
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+The following object is masked from ‘package:purrr’:
+
+    transpose
+
+> nov2024Cyclistic_df <- read_csv(202411-divvy-tripdata.csv)
+Error: object 'divvy' not found
+> nov2024cyclistic_df <- read_csv("202411-divvy-tripdata.csv")
+Rows: 335075 Columns: 13                                                                                        
+── Column specification ────────────────────────────────────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_station_name, end_station_id, me...
+dbl  (4): start_lat, start_lng, end_lat, end_lng
+dttm (2): started_at, ended_at
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+> nov2024cyclistic_df$ride_duration <- difftime(nov2024cyclistic_df$ended_at, nov2024cyclistic_df$started_at, units = "mins")
+> nov2024cyclistic_df$ride_duration <- round(nov2024cyclistic_df$ride_duration, digits = 1)
+> View(nov2024cyclistic_df)
+> nov2024cyclistic_df$date <- as.Date(nov2024cyclistic_df$started_at)
+> nov2024cyclistic_df$day_of_week <- wday(nov2024cyclistic_df$started_at)
+> nov2024cyclistic_df$day_of_week <- format(as.Date(nov2024cyclistic_df$date), "%A")
+> nov2024cyclistic_df$month <- format(as.Date(nov2024cyclistic_df$date), "%m")
+> nov2024cyclistic_df$day <- format(as.Date(nov2024cyclistic_df$date), "%d")
+> nov2024cyclistic_df$year <- format(as.Date(nov2024cyclistic_df$date), "%Y")
+> nov2024cyclistic_df$time <- format(as.Date(nov2024cyclistic_df$date), "%H:%M:%S")
+> nov2024cyclistic_df$time <- as_hms(nov2024cyclistic_df$started_at)
+> nov2024cyclistic_df$hour <- hour(nov2024cyclistic_df$time)
+
+> nov2024cyclistic_df <-nov2024cyclistic_df %>% mutate(time_of_day = 
++                                                case_when(hour == "0" ~ "Night",
++                                                          hour == "1" ~ "Night",
++                                                          hour == "2" ~ "Night",
++                                                          hour == "3" ~ "Night",
++                                                          hour == "4" ~ "Night",
++                                                          hour == "5" ~ "Night",
++                                                          hour == "6" ~ "Morning",
++                                                          hour == "7" ~ "Morning",
++                                                          hour == "8" ~ "Morning",
++                                                          hour == "9" ~ "Morning",
++                                                          hour == "10" ~ "Morning",
++                                                          hour == "11" ~ "Morning",
++                                                          hour == "12" ~ "Afternoon",
++                                                          hour == "13" ~ "Afternoon",
++                                                          hour == "14" ~ "Afternoon",
++                                                          hour == "15" ~ "Afternoon",
++                                                          hour == "16" ~ "Afternoon",
++                                                          hour == "17" ~ "Afternoon",
++                                                          hour == "18" ~ "Evening",
++                                                          hour == "19" ~ "Evening",
++                                                          hour == "20" ~ "Evening",
++                                                          hour == "21" ~ "Evening",
++                                                          hour == "22" ~ "Evening",
++                                                          hour == "23" ~ "Evening")
++ )
+> nov2024cyclistic_df <- nov2024cyclistic_df %>% mutate(month = 
++                                                case_when( month == "11" ~ "November"
++                                                          
++                                                )
++ )
+
+> nov2024cyclistic_df <- nov2024cyclistic_df[!is.na(nov2024cyclistic_df$end_lat),]
+
+> nov2024cyclistic_df <- distinct(nov2024cyclistic_df)
+> nov2024cyclistic_df <- nov2024cyclistic_df[!(nov2024cyclistic_df$ride_duration <=0),]
+
+## down to 334293 rows
+> nov2024cyclistic_df <- nov2024cyclistic_df %>% select(-c(ride_id, end_station_name, end_station_id, end_lat, end_lng))
+
+> nov2024cyclistic_df <- nov2024cyclistic_df %>% select(-c(start_lat, start_lng))
+> nov2024stationkey_df <- read_csv("202411_station_key_cyclistic.csv")
+Rows: 1333 Columns: 2                                                                                           
+── Column specification ─────────────────────────────────────────────────────────��──────────────────────────────
+Delimiter: ","
+chr (2): start_station_name, start_lat_lng
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> View(nov2024stationkey_df)
+> View(nov2024cyclistic_df)
+> View(nov2024stationkey_df)
+Connected to your session in progress, last started 2025-Jan-10 17:22:06 UTC (5 minutes ago)
+> View(nov2024cyclistic_df)
+> nov2024cyclistic_df <- left_join(nov2024cyclistic_df, nov2024stationkey_df, by = 'start_station_name')
+> nov2024cyclistic_df <- separate(nov2024cyclistic_df, col = start_lat_lng, into = c("start_lat", "start_lng"), sep = ";")
 
 
+nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_station_name = recode(start_station_name,
++         "N Damen Ave & W Chicago Ave" = "Damen Ave & Chicago Ave"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lat = recode(start_lat,
++                         "41.895809" = "41.895769"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lng = recode(start_lng,
++                         "-87.678519" = "-87.67722"))
+
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_station_name = recode(start_station_name,
++                         "N Clark St & W Elm St" = "Clark St & Elm St"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lat = recode(start_lat,
++                         "41.902901" = "41.902973"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lng = recode(start_lng,
++                         "-87.631282" = "-87.63128"))
+
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_station_name = recode(start_station_name,
++                         "Fort Dearborn Dr & 31st St*" = "Fort Dearborn Dr & 31st St"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lat = recode(start_lat,
++                         "41.8386763289712" = "41.83855"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lng = recode(start_lng,
++                         "-87.6088321208953" = "-87.608218"))
+
+
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_station_name = recode(start_station_name,
++                         "Leavitt St/North Ave" = "Leavitt St & North Ave"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lat = recode(start_lat,
++                         "41.910077" = "41.910533"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lng = recode(start_lng,
++                         "-87.682306" = "-87.682308"))
+
+
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_station_name = recode(start_station_name,
++                         "Streeter Dr/Grand Ave" = "Streeter Dr & Grand Ave"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lat = recode(start_lat,
++                         "-87.612388" = "41.892278"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lng = recode(start_lng,
++                         "-87.612388" = "-87.612043")) 
+
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_station_name = recode(start_station_name,
++                         "Wentworth Ave & Cermak Rd*" = "Wentworth Ave & Cermak Rd"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lat = recode(start_lat,
++                         "41.8532144185196" = "41.8530845574127"))
+> nov2024cyclistic_df <- mutate(nov2024cyclistic_df, start_lng = recode(start_lng,
++                         "-87.6318722963333" = "-87.6319313049316"))
+
+
+> fwrite(nov2024cyclistic_df,"nov2024__cyclistic_tripdata.csv")
